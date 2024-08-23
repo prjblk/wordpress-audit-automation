@@ -85,7 +85,7 @@ if __name__ == "__main__":
         "--download-dir",
         type=str,
         default=".",
-        help="The directory to save downloaded files (default: current directory)",
+        help="The directory where the downloaded plugins folder is (default: current directory)",
     )
     parser.add_argument(
         "--config",

@@ -9,6 +9,7 @@ Full write-up: https://projectblack.io/blog/cve-hunting-at-scale/
 ### Prerequisites
 
 * Ubuntu or other nix system
+* At least 200GB of disk space
 * MySQL database server
 * Python
 * Patience
@@ -67,7 +68,7 @@ Runs semgrep over the downloaded plugins and inserts output into the database.
 options:
   -h, --help            show this help message and exit
   --download-dir DOWNLOAD_DIR
-                        The directory to save downloaded files (default: current directory)
+                        The directory where the downloaded plugins folder is (default: current directory)
   --config CONFIG       Semgrep config/rules to run - https://semgrep.dev/docs/running-rules#running-semgrep-registry-rules-locally (default: p/php)
   --create-schema       Create the database and schema if this flag is set
   --verbose             Print detailed messages
