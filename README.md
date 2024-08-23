@@ -51,7 +51,7 @@ options:
   --csv CSV             The name of the output CSV file (default: output.csv)
   --download-dir DOWNLOAD_DIR
                         The directory to save downloaded files (default: current directory)
-  --download            Download and extract plugins based on the CSV file
+  --download            Download and extract plugins
   --create-schema       Create the database and schema if this flag is set
   --verbose             Print detailed messages
 
@@ -89,3 +89,7 @@ FROM PluginResults INNER JOIN PluginData ON PluginResults.slug = PluginData.slug
 WHERE check_id = "php.lang.security.injection.tainted-sql-string.tainted-sql-string"
 ORDER BY active_installs DESC
 ```
+
+### Troubleshooting
+
+If you have problems with the audit script, ensure you can run semgrep at the command line normally first.
