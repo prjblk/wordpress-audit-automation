@@ -187,7 +187,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--download",
         action="store_true",
-        help="Download and extract plugins based on the CSV file",
+        help="Download and extract plugins",
     )
     parser.add_argument(
         "--create-schema",
