@@ -24,14 +24,18 @@ Full write-up: https://projectblack.io/blog/cve-hunting-at-scale/
     cp config.ini.sample config.ini
     nano config.ini
     ```
-4. Setup the database schema manually (skip this step if providing privileged database credentials to the script)
+4. Install Python dependencies + Semgrep
+    ```
+    pip install -r requirements.txt
+    ```
+5. Setup the database schema manually (skip this step if providing privileged database credentials to the script)
     * Create a database and run the SQL in create_plugin_data_table and create_plugin_results_table in dbutils.py
-5. Run the download script with the --download flag and --create-schema
+6. Run the download script with the --download flag and --create-schema options
     * You might want to run this and the audit script in a tmux/screen session as it takes ages
-6. Run the audit script
-7. Triage output
-8. ???
-9. CVEs
+7. Run the audit script
+8. Triage output
+9. ???
+10. CVEs
 
 ### Example Usage
 
@@ -72,6 +76,10 @@ $ python3 plugin-audit.py
 Auditing plugins:  10%|█████████████▍            
 ```
 #### Useful SQL Queries
+
+By default all the rules in p/php are run against the plugins (minus the PRO rules unless you're logged in). https://semgrep.dev/p/php
+
+You can focus on a specific vulnerability class by querying for output relating to a specific rule.
 
 ```
 USE SemgrepResults;
