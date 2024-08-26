@@ -42,40 +42,25 @@ Full write-up: https://projectblack.io/blog/cve-hunting-at-scale/
 ### Example Usage
 
 ```
-$ python3 plugin-download.py -h
-usage: plugin-download.py [-h] [--csv CSV] [--download-dir DOWNLOAD_DIR] [--download] [--create-schema] [--verbose]
+$ python3 wordpress-plugin-audit.py -h
+usage: wordpress-plugin-audit.py [-h] [--download] [--download-dir DOWNLOAD_DIR] [--audit] [--config CONFIG] [--create-schema] [--clear-results] [--verbose]
 
-Download WordPress plugins information, save to a CSV file, insert into a database and optionally download the plugins.
-
-options:
-  -h, --help            show this help message and exit
-  --csv CSV             The name of the output CSV file (default: output.csv)
-  --download-dir DOWNLOAD_DIR
-                        The directory to save downloaded files (default: current directory)
-  --download            Download and extract plugins
-  --create-schema       Create the database and schema if this flag is set
-  --verbose             Print detailed messages
-
-$ python3 plugin-download.py --download --create-schema
-Downloading plugins:   0%|                 
-```
-
-```
-$ python3 plugin-audit.py -h
-usage: plugin-audit.py [-h] [--download-dir DOWNLOAD_DIR] [--config CONFIG] [--create-schema] [--verbose]
-
-Runs semgrep over the downloaded plugins and inserts output into the database.
+Downloads or audits all Wordpress plugins.
 
 options:
   -h, --help            show this help message and exit
+  --download            Download and extract plugins, if plugin directory already exists, it will delete it and redownload
   --download-dir DOWNLOAD_DIR
-                        The directory where the downloaded plugins folder is (default: current directory)
+                        The directory to save/audit downloaded plugins (default: current directory)
+  --audit               Audits downloaded plugins sequentially
   --config CONFIG       Semgrep config/rules to run - https://semgrep.dev/docs/running-rules#running-semgrep-registry-rules-locally (default: p/php)
   --create-schema       Create the database and schema if this flag is set
+  --clear-results       Clear audit table and then run, useful if run as a cron job and we only care about the latest release
   --verbose             Print detailed messages
 
-$ python3 plugin-audit.py
-Auditing plugins:  10%|█████████████▍            
+$ python3 wordpress-plugin-audit.py --download --audit --create-schema
+Downloading plugins: 100%|███████████████████████████████████| 2/2 [00:49<00:00, 24.65s/it]
+Auditing plugins:  10%|█████                          | 2/20 [00:05<00:47,  2.62s/it]
 ```
 #### Useful SQL Queries
 

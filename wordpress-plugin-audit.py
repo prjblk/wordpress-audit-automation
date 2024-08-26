@@ -1,16 +1,19 @@
 import requests
-import csv
 import argparse
 import os
 import json
 import subprocess
-import mysql.connector
 import zipfile
 import shutil
 from datetime import datetime
 from io import BytesIO
 from tqdm import tqdm
-from dbutils import connect_to_db, delete_results_table
+from dbutils import (
+    connect_to_db,
+    delete_results_table,
+    insert_result_into_db,
+    insert_plugin_into_db,
+)
 
 
 # Let's only retrieve 10 plugins per page so people feel like the status bar is actually moving
@@ -48,54 +51,10 @@ def write_plugins_to_csv_db_and_download(db_conn, cursor, download_dir, verbose=
             break
 
         for plugin in data["plugins"]:
+            insert_plugin_into_db(cursor, plugin)
 
-            # Prepare data for database insertion
-            last_updated = plugin.get("last_updated", None)
-            added_date = plugin.get("added", None)
-
-            # Convert date formats if available
-            if last_updated:
-                last_updated = datetime.strptime(
-                    last_updated, "%Y-%m-%d %I:%M%p %Z"
-                ).strftime("%Y-%m-%d %H:%M:%S")
-            if added_date:
-                added_date = datetime.strptime(added_date, "%Y-%m-%d").strftime(
-                    "%Y-%m-%d"
-                )
-
-            # Prepare SQL upsert statement
-            sql = """
-            INSERT INTO PluginData (slug, version, active_installs, downloaded, last_updated, added_date, download_link)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            ON DUPLICATE KEY UPDATE
-                version = VALUES(version),
-                active_installs = VALUES(active_installs),
-                downloaded = VALUES(downloaded),
-                last_updated = VALUES(last_updated),
-                added_date = VALUES(added_date),
-                download_link = VALUES(download_link)
-            """
-            data = (
-                plugin["slug"],
-                plugin.get("version", "N/A"),
-                int(plugin.get("active_installs", 0)),
-                int(plugin.get("downloaded", 0)),
-                last_updated,
-                added_date,
-                plugin.get("download_link", "N/A"),
-            )
-
-            try:
-                cursor.execute(sql, data)
-                db_conn.commit()
-                if verbose:
-                    print(f"Inserted data for plugin {plugin['slug']}.")
-            except mysql.connector.errors.ProgrammingError as e:
-                if "1146" in str(e):
-                    raise SystemExit(
-                        "Table does not exist. Please run with the '--create-schema' flag to create the table."
-                    )
-
+            if verbose:
+                print(f"Inserted data for plugin {plugin['slug']}.")
             # Download and extract the plugin
             download_and_extract_plugin(plugin, download_dir, verbose)
 
@@ -138,29 +97,6 @@ def download_and_extract_plugin(plugin, download_dir, verbose):
         print(f"Failed to unzip {slug}: Not a zip file or corrupt zip file")
 
 
-def insert_result_into_db(cursor, slug, result):
-    sql = (
-        "INSERT INTO PluginResults (slug, file_path, check_id, start_line, end_line, vuln_lines)"
-        "VALUES (%s, %s, %s, %s, %s, %s)"
-    )
-    data = (
-        slug,
-        result["path"],
-        result["check_id"],
-        result["start"]["line"],
-        result["end"]["line"],
-        result["extra"]["lines"],
-    )
-    try:
-        cursor.execute(sql, data)
-
-    except mysql.connector.errors.ProgrammingError as e:
-        if "1146" in str(e):
-            raise SystemExit(
-                "Table does not exist. Please run with the '--create-schema' flag to create the table."
-            )
-
-
 def run_semgrep_and_store_results(db_conn, cursor, download_dir, config, verbose=False):
 
     plugins = os.listdir(os.path.join(download_dir, "plugins"))
@@ -200,6 +136,7 @@ def run_semgrep_and_store_results(db_conn, cursor, download_dir, config, verbose
             for item in data["results"]:
                 insert_result_into_db(cursor, plugin, item)
                 db_conn.commit()
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -245,7 +182,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if not args.download and not args.audit:
-        print ("Please set either the --download or --audit option.\n")
+        print("Please set either the --download or --audit option.\n")
         parser.print_help()
 
     else:
@@ -263,6 +200,6 @@ if __name__ == "__main__":
             run_semgrep_and_store_results(
                 db_conn, cursor, args.download_dir, args.config, args.verbose
             )
-            
+
         cursor.close()
         db_conn.close()
