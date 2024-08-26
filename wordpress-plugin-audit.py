@@ -38,7 +38,6 @@ def write_plugins_to_csv_db_and_download(db_conn, cursor, download_dir, verbose=
         return
 
     total_pages = data["info"]["pages"]
-    total_pages = 2
 
     # Ensure the directory for plugins exists
     os.makedirs(os.path.join(download_dir, "plugins"), exist_ok=True)
