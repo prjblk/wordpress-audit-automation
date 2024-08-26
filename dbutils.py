@@ -35,6 +35,9 @@ def connect_to_db(create_schema=False):
 
     return db_conn, cursor
 
+def delete_results_table(cursor):
+    cursor.execute("DROP TABLE IF EXISTS PluginResults")
+    create_plugin_results_table(cursor)
 
 def create_plugin_data_table(cursor):
     cursor.execute(

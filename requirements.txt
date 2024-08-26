@@ -1,3 +1,4 @@
 mysql-connector-python
 tqdm
 semgrep
+shutil
