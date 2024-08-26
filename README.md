@@ -29,14 +29,15 @@ Full write-up: https://projectblack.io/blog/cve-hunting-at-scale/
     ```
     pip install -r requirements.txt
     ```
-5. Setup the database schema manually (skip this step if providing privileged database credentials to the script)
+6. You may have to login again to ensure Semgrep is available via path
+7. Setup the database schema manually (skip this step if providing privileged database credentials to the script)
     * Create a database and run the SQL in create_plugin_data_table and create_plugin_results_table in dbutils.py
-6. Run the download script with the --download flag and --create-schema options
+8. Run the download script with the --download flag and --create-schema options
     * You might want to run this and the audit script in a tmux/screen session as it takes ages
-7. Run the audit script
-8. Triage output
-9. ???
-10. CVEs
+9. Run the audit script
+10. Triage output
+11. ???
+12. CVEs
 
 ### Example Usage
 
