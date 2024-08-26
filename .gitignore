@@ -2,3 +2,5 @@ config.ini
 output.csv
 __pycache__
 plugins
+releases
+create_release.sh

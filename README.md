@@ -4,6 +4,10 @@ Scripts to download every Wordpress plugin (updated in the last 2 years) and run
 
 Full write-up: https://projectblack.io/blog/cve-hunting-at-scale/
 
+Want to skip straight to looking at the dataset? 
+
+Download the latest mysqldump here: https://github.com/prjblk/wordpress-audit-automation/releases
+
 ## Getting Started
 
 ### Prerequisites
@@ -78,4 +82,4 @@ ORDER BY active_installs DESC
 
 ### Troubleshooting
 
-If you have problems with the audit script, ensure you can run semgrep at the command line normally first.
+If you have problems with auditing plugins, ensure you can run semgrep at the command line normally first.
