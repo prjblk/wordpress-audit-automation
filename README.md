@@ -38,6 +38,8 @@ Download the latest mysqldump here: https://github.com/prjblk/wordpress-audit-au
     * Create a database and run the SQL in create_plugin_data_table and create_plugin_results_table in dbutils.py
 8. Run the script with the --download --audit and --create-schema options
     * You might want to run this in a tmux/screen session as it takes ages (15 hours?)
+    * By default all the rules in p/php are run against the plugins (minus the PRO rules unless you're logged in). https://semgrep.dev/p/php
+    * Would highly suggest looking at some of the other rules available as well
 9. Triage output
 10. ???
 11. CVEs
@@ -66,8 +68,6 @@ Downloading plugins: 100%|██████████████████
 Auditing plugins:  10%|█████                          | 2/20 [00:05<00:47,  2.62s/it]
 ```
 #### Useful SQL Queries
-
-By default all the rules in p/php are run against the plugins (minus the PRO rules unless you're logged in). https://semgrep.dev/p/php
 
 You can focus on a specific vulnerability class by querying for output relating to a specific rule.
 
