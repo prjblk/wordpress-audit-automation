@@ -13,7 +13,7 @@ Download the latest mysqldump here: https://github.com/prjblk/wordpress-audit-au
 ### Prerequisites
 
 * Ubuntu or other nix system
-* At least 200GB of disk space
+* At least 30GB of disk space
 * MySQL database server
 * Python
 * Patience
