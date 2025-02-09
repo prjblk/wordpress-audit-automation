@@ -52,7 +52,8 @@ def create_plugin_data_table(cursor):
         downloaded INT,
         last_updated DATETIME,
         added_date DATE,
-        download_link TEXT
+        download_link TEXT,
+        cms TEXT
     )
     """
     )
@@ -75,11 +76,11 @@ def create_plugin_results_table(cursor):
     )
 
 
-def insert_plugin_into_db(cursor, plugin):
+def insert_plugin_into_db(cursor, plugin, cms):
     # Prepare SQL upsert statement
     sql = """
-    INSERT INTO PluginData (slug, version, active_installs, downloaded, last_updated, added_date, download_link)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO PluginData (slug, version, active_installs, downloaded, last_updated, added_date, download_link, cms)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
     ON DUPLICATE KEY UPDATE
         version = VALUES(version),
         active_installs = VALUES(active_installs),
@@ -88,27 +89,15 @@ def insert_plugin_into_db(cursor, plugin):
         added_date = VALUES(added_date),
         download_link = VALUES(download_link)
     """
-
-    # Prepare data for database insertion
-    last_updated = plugin.get("last_updated", None)
-    added_date = plugin.get("added", None)
-
-    # Convert date formats if available
-    if last_updated:
-        last_updated = datetime.strptime(last_updated, "%Y-%m-%d %I:%M%p %Z").strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-    if added_date:
-        added_date = datetime.strptime(added_date, "%Y-%m-%d").strftime("%Y-%m-%d")
-
     data = (
         plugin["slug"],
         plugin.get("version", "N/A"),
         int(plugin.get("active_installs", 0)),
         int(plugin.get("downloaded", 0)),
-        last_updated,
-        added_date,
+        plugin.get("last_updated_z", None),
+        plugin.get("added_date", None),
         plugin.get("download_link", "N/A"),
+        cms
     )
 
     try:
